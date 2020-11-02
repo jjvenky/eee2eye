@@ -31,7 +31,7 @@ eee2eye <- function(df, dL, dI, dP, temp, humid, k){
   }
 
   dP_input <- if(is.numeric(dP) == TRUE) {
-    dL
+    dP
   } else {
     df[[dP]]
   }
