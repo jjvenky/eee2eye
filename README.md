@@ -33,62 +33,62 @@ rain)
 eee2eye <- function(df, dL, dI, dP, temp, humid, k){
 
   #check if using values or specific columns for each parameter
-  dL <- if(is.numeric(dL) == TRUE) {
+  dL_input <- if(is.numeric(dL) == TRUE) {
     dL
   } else {
     df[[dL]]
   }
 
-  dI <- if(is.numeric(dI) == TRUE) {
+  dI_input <- if(is.numeric(dI) == TRUE) {
     dI
   } else {
     df[[dI]]
   }
 
-  dP <- if(is.numeric(dP) == TRUE) {
+  dP_input <- if(is.numeric(dP) == TRUE) {
     dL
   } else {
     df[[dP]]
   }
 
-  temp <- if(is.numeric(temp) == TRUE) {
+  temp_input <- if(is.numeric(temp) == TRUE) {
     temp
   } else {
     df[[temp]]
   }
 
-  humid <- if(is.numeric(humid) == TRUE) {
+  humid_input <- if(is.numeric(humid) == TRUE) {
     humid
   } else {
     df[[humid]]
   }
 
-  k <- if(is.numeric(k) == TRUE) {
+  k_input <- if(is.numeric(k) == TRUE) {
     k
   } else {
     df[[k]]
   }
 
   #Calculate isotope fractionation and separation factors:
-  alpha_plus <- exp((-7.685/(10^3)) + (6.7123/(273.15 + temp)) - (1666.4/((273.15 + temp)^2)) + (350410/((273.15 + temp)^3)))
+  alpha_plus <- exp((-7.685/(10^3)) + (6.7123/(273.15 + temp_input)) - (1666.4/((273.15 + temp_input)^2)) + (350410/((273.15 + temp_input)^3)))
   e_plus_permille <- (alpha_plus - 1) * 1000
 
   theta <- 1
   Ck_permille <- 14.2
-  ek_permille <- theta * Ck_permille * (1 - humid)
+  ek_permille <- theta * Ck_permille * (1 - humid_input)
 
 
   #Calculate dA
-  dA_permille <- (dP - (k * e_plus_permille)) / (1 + ((10^-3) * k * e_plus_permille))
+  dA_permille <- (dP_input - (k_input * e_plus_permille)) / (1 + ((10^-3) * k_input * e_plus_permille))
 
   #Calculate temporal enrichment slope (m)
-  m <- (humid - (10^-3) * (ek_permille + (e_plus_permille / alpha_plus))) / (1 - humid + ((10^-3) * ek_permille))
+  m <- (humid_input - (10^-3) * (ek_permille + (e_plus_permille / alpha_plus))) / (1 - humid_input + ((10^-3) * ek_permille))
 
   #Calculate limiting isotopic composition
-  dstar_permille <- ((humid * dA_permille) + ek_permille + (e_plus_permille/alpha_plus)) / (humid - ((10^-3) * (ek_permille + (e_plus_permille/alpha_plus))))
+  dstar_permille <- ((humid_input * dA_permille) + ek_permille + (e_plus_permille/alpha_plus)) / (humid_input - ((10^-3) * (ek_permille + (e_plus_permille/alpha_plus))))
 
   #Calculate our E:I based on lake sig
-  df$E.I <- (dL - dI) / (m * (dstar_permille - dL))
+  df$E.I <- (dL_input - dI_input) / (m * (dstar_permille - dL_input))
 
   return(df)
 
@@ -115,5 +115,5 @@ ei_input <- eee2eye(ei_input, 'dL_permille', 'dI_permille', 'dP_permille', 'temp
 or with numerical inputs:
 
 ``` r
-ei_input <- eee2eye(ei_input, 'dL_permille', -25, 'dP_permille', 18, 0.75, 0.8)
+ei_input <- eee2eye(ei_input, 'dL_permille', -20.7, 'dP_permille', 14.3, 0.68, 0.7)
 ```
