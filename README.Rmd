@@ -1,7 +1,7 @@
 ---
 title: "README"
 author: "PJKA"
-date: "13/05/2020"
+date: "02/11/2020"
 output: 
   github_document
 
@@ -20,39 +20,91 @@ The function is based on a table with the following input parameters per sample:
 - dP (‰) = -23, average value during evaporation season (signal of rain)  
 - temp (C) = 14.3, average temp. on lake (from Gibson & Reid, 2010)  
 - humid (dec) = 0.68, relative humidity (from Gibson & Reid, 2010)  
-- evap (m/yr) = 0.397, annual evap. rate of area (from Gibson & Reid 2010)  
 - k = 0.7, estimated for our area
 
-
+### 'eee2eye' Package
 ```{r}
-eee2eye <- function(df, dL, dI, dP, temp, humid, evap, k){
-  
+eee2eye <- function(df, dL, dI, dP, temp, humid, k){
+
+  #check if using values or specific columns for each parameter
+  dL <- if(is.numeric(dL) == TRUE) {
+    dL
+  } else {
+    df[[dL]]
+  }
+
+  dI <- if(is.numeric(dI) == TRUE) {
+    dI
+  } else {
+    df[[dI]]
+  }
+
+  dP <- if(is.numeric(dP) == TRUE) {
+    dL
+  } else {
+    df[[dP]]
+  }
+
+  temp <- if(is.numeric(temp) == TRUE) {
+    temp
+  } else {
+    df[[temp]]
+  }
+
+  humid <- if(is.numeric(humid) == TRUE) {
+    humid
+  } else {
+    df[[humid]]
+  }
+
+  k <- if(is.numeric(k) == TRUE) {
+    k
+  } else {
+    df[[k]]
+  }
+
   #Calculate isotope fractionation and separation factors:
-  alpha_plus <- exp((-7.685/(10^3)) + (6.7123/(273.15 + df[[temp]])) - (1666.4/((273.15 + df[[temp]])^2)) + (350410/((273.15 + df[[temp]])^3)))
+  alpha_plus <- exp((-7.685/(10^3)) + (6.7123/(273.15 + temp)) - (1666.4/((273.15 + temp)^2)) + (350410/((273.15 + temp)^3)))
   e_plus_permille <- (alpha_plus - 1) * 1000
- 
+
   theta <- 1
-  Ck_permille <- 14.2 
-  ek_permille <- theta * Ck_permille * (1 - df[[humid]])
-  
+  Ck_permille <- 14.2
+  ek_permille <- theta * Ck_permille * (1 - humid)
+
+
   #Calculate dA
-  dA_permille <- (df[[dP]] - (df[[k]] * e_plus_permille)) / (1 + ((10^-3) * df[[k]] * e_plus_permille))
+  dA_permille <- (dP - (k * e_plus_permille)) / (1 + ((10^-3) * k * e_plus_permille))
 
   #Calculate temporal enrichment slope (m)
-  m <- (df[[humid]] - (10^-3) * (ek_permille + (e_plus_permille / alpha_plus))) / (1 - df[[humid]] + ((10^-3) * ek_permille))
+  m <- (humid - (10^-3) * (ek_permille + (e_plus_permille / alpha_plus))) / (1 - humid + ((10^-3) * ek_permille))
 
   #Calculate limiting isotopic composition
-  dstar_permille <- ((df[[humid]] * dA_permille) + ek_permille + (e_plus_permille/alpha_plus)) / (df[[humid]] - ((10^-3) * (ek_permille + (e_plus_permille/alpha_plus))))
-  
+  dstar_permille <- ((humid * dA_permille) + ek_permille + (e_plus_permille/alpha_plus)) / (humid - ((10^-3) * (ek_permille + (e_plus_permille/alpha_plus))))
+
   #Calculate our E:I based on lake sig
-  df$E.I <- (df[[dL]] - df[[dI]]) / (m * (dstar_permille - df[[dL]]))
+  df$E.I <- (dL - dI) / (m * (dstar_permille - dL))
 
   return(df)
-  
+
 }
+```
 
-ei_input <- read.csv("F:/PostDoc/Publications/Manuscript 1 - Changes Due to Precip/SAMMS DOM and Precip/ei_input.csv")
+### Example
+To add E:I ratios to your dataframe, essentially run:
+```{r}
+#example database
+ei_input <- data.frame(dL_permille = c(-11.77, -15.67, -18.23),
+                       dI_permille = c(-20.7, -18.2, -20.2),
+                       dP_permille = c(-23, -28, -32), 
+                       temp_C = c(14.3, 12.1, 8.9), 
+                       h_dec = c(0.68, 0.71, 0.58), 
+                       k = c(0.7, 0.72, 0.65))
 
-ei_input <- eee2eye(ei_input, 'd18O_H2O_permille', 'dI_permille', 'dP_permille', 'temp_C', 'h_dec', 'evap_m.yr', 'k')
+#adding calculated E:I
+ei_input <- eee2eye(ei_input, 'dL_permille', 'dI_permille', 'dP_permille', 'temp_C', 'h_dec', 'k')
 
+```
+or with numerical inputs:
+```{r}
+ei_input <- eee2eye(ei_input, 'dL_permille', -25, 'dP_permille', 18, 0.75, 0.8)
 ```
