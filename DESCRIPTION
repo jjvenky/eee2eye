@@ -1,11 +1,11 @@
 Package: eee2eye
 Type: Package
 Title: Calculate evaporation to inflow ratios for lakes using a bunch of assumptions and d18O-H2O values
-Version: 0.1.0
+Version: 0.2.0
 Author: Pieter J. K. Aukes
 Maintainer: PJKA <paukes@uwaterloo.ca>
 Description: This function uses an isotope mass balance approach to calculate the evaporation to inflow (E:I) ratio for a lake based on the excellent description by Gibson et al. 2015.
 License: MIT License
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
