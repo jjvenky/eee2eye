@@ -1,0 +1,180 @@
+---
+title: "E:I Calculations"
+author: "Pieter J. K. Aukes"
+output:
+  pdf_document
+---
+# Introduction
+
+Here we go over the steps to calculate the evaporation to input (E:I) ratios for sub-arctic lakes based on stable isotopes of water. The steps here follow a comprehensive article on all the theory, assumptions, and much more by [Gibson et al. 2016](https://www.sciencedirect.com/science/article/abs/pii/S0277379115001559?via%3Dihub). We highly recommend this text for working with stable water isotopes and mass balances.
+
+Other useful publications are:
+[Gibson & Edwards. 2002 ](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2001GB001839)  
+[Yi et al. 2008](https://www.sciencedirect.com/science/article/abs/pii/S0022169407006877)  
+[Wolfe et al. 2007](https://onlinelibrary.wiley.com/doi/abs/10.1002/hyp.6229)  
+[MacDonald et al. 2016](https://cdnsciencepub.com/doi/full/10.1139/AS-2016-0019)  
+[Brock et al. 2007](https://www.tandfonline.com/doi/full/10.1657/1523-0430(06-026)[BROCK]2.0.CO;2)  
+
+# E:I Calculations based from ^18^O
+
+## The Theory - Isotope Mass Balance
+Assuming our lakes are at steady-state, short term or seasonal variations are minimal, we can write an isotope mass balance as:  
+**Equation 1**  
+$$ I = Q + E $$
+and with the isotopic values:  
+**Equation 2**
+$$ I\delta_I = Q\delta_Q + E\delta_E $$
+where  
+$I$ = inflow  
+$Q$ = lake outflow  
+$E$ = lake evaporation  
+$\delta$ = isotopic values of each  
+
+We also assume that our lake is well mixed so that $\delta_Q = \delta_L$, there is no long-term storage, and that $Q=I-E$. Although our lakes have no visible outflows, we assume that if there is any loss that it will be of the same signature of the lake.
+
+We end up with the equation:  
+**Equation 3**  
+$$\displaystyle \frac{E}{I} = \frac{\delta_I-\delta_L}{\delta_E-\delta_L}$$
+
+As proposed by Gibson et al. 2016, we estimate $\delta_E$ using the Craig and Gordon (1965) model and convention of Gonfiantini (1986) (ratio of liquid versus vapour):  
+**Equation 4**
+$$\displaystyle \delta_E= \frac {\frac {\delta_L-\varepsilon^+}{\alpha^+} - h\delta_A-\varepsilon_K}{ 1 - h+10^{-3}\varepsilon_K }$$
+
+where $\delta_E$ (‰) and:    
+$\varepsilon^+$ = equilibrium isotopic separation (Horita & Wesolowski, 1994)  
+$\alpha^+$ = equilibrium fractionation
+$h$ = relative humidity normalized to water surface temperature (decimal)
+$\delta_A$ = atmospheric moisture 
+$\varepsilon_K$ = kinetic isotopic separation  
+
+The separation values can be calculated by:  
+**Equation 5**: $\varepsilon^+ = (\alpha^+ - 1) \times 1000$  
+**Equation 6**: $\varepsilon_K = \theta \times C_K(1-h)$  
+where $\theta$ = transport resistance parameter  
+$C_K$ = kinetic constant (14.2‰ for 18O (Horita et al. 2008))
+
+The equilibrium isotopic fractionation and separation values are temperature-dependent, and can be calculated by (Horita & Wesolowski, 1994):  
+**Equation 7**
+$$\displaystyle \alpha^+(^{18}\text{O})=\exp \left(\frac{-7.685}{10^3}+\frac{6.7123}{273.15+T}- \frac{1666.4}{(273.15+T)^2}+\frac{350410}{(273.15+T)^3}\right)$$
+where  
+$T$ = temperature at water surface (C)
+
+
+By substituting the Eq 4 into Eq 3, we get:  
+**Equation 8**
+$$\displaystyle \frac {E}{I}=\frac{\delta_L-\delta_I}{m(\delta^* - \delta_L)}$$
+where  
+$m$ = temporal enrichment slope defined by:  
+**Equation 9**
+$$\displaystyle m=\frac {h-10^{-3} \times(\varepsilon_K+\varepsilon^+/\alpha^+)}{1-h+10^{-3}\times\varepsilon_K} $$
+$\delta^*$ (‰) = limiting isotopic composition, defined by:  
+**Equation 10**
+$$\displaystyle \delta^*= \frac {h\delta_A +\varepsilon_K+\varepsilon^+/\alpha^+}{h-10^{-3}\times(\varepsilon_K+\varepsilon^+/\alpha^+)} $$
+The last step is to calculate $\delta_A$ (‰) via evaporation flux-weighted values of $\delta_P$:  
+**Equation 11**
+$$\displaystyle \delta_A=\frac {\delta_P-k\varepsilon^+}{1+10^{-3}k\varepsilon^+}$$
+where  
+$k$ = seasonality (0.5 for highly seasonal; 1 for non-seasonal)
+
+Alternatively, Gibson & Edwards 2002 estimate $\delta_A$ using flux-weighted precipitation via:  
+**Equation 12**
+$$\delta_A^{fw}=\alpha^*(T^{fw})\delta_P^{fw}-\varepsilon^*(T^{fw})$$
+and  
+**Equation 13**
+$$\varepsilon_K=C_K(1-h^{fw})$$
+but we used Equation 11 for this publication.
+
+
+## Calculating E:I Values from $\delta$^18^O-H~2~O (‰)
+
+We have created a function in R to calculate E:I ratios, based on ^18O-H~2O, using the above equations. Environmental conditions (i.e. evaporation rate, humidity, temperatures, etc.) are set for the sub-arctic around Yellowknife, NT.
+
+The function is based on a table with the following input parameters per sample:  
+- dL (‰) = -11.77, steady-state lake isotope value (measured value from field)  
+- dI (‰) = -20.7, source water, likely precipitation, represents a flux-weight precip value (value from Gibson 2001 and GNIP 1999)  
+- dP (‰) = -23, average value during evaporation season (signal of rain)  
+- temp (C) = 14.3, average temp. on lake (from Gibson & Reid, 2010)  
+- humid (dec) = 0.68, relative humidity (from Gibson & Reid, 2010)  
+- k = 0.7, estimated for our area
+
+
+```{r}
+eee2eye <- function(df, dL, dI, dP, temp, humid, k){
+
+  #check if using values or specific columns for each parameter
+  dL_input <- if(is.numeric(dL) == TRUE) {
+    dL
+  } else {
+    df[[dL]]
+  }
+
+  dI_input <- if(is.numeric(dI) == TRUE) {
+    dI
+  } else {
+    df[[dI]]
+  }
+
+  dP_input <- if(is.numeric(dP) == TRUE) {
+    dP
+  } else {
+    df[[dP]]
+  }
+
+  temp_input <- if(is.numeric(temp) == TRUE) {
+    temp
+  } else {
+    df[[temp]]
+  }
+
+  humid_input <- if(is.numeric(humid) == TRUE) {
+    humid
+  } else {
+    df[[humid]]
+  }
+
+  k_input <- if(is.numeric(k) == TRUE) {
+    k
+  } else {
+    df[[k]]
+  }
+
+  #Calculate isotope fractionation and separation factors:
+  alpha_plus <- exp((-7.685/(10^3)) + (6.7123/(273.15 + temp_input)) - (1666.4/((273.15 + temp_input)^2)) + (350410/((273.15 + temp_input)^3)))
+  e_plus_permille <- (alpha_plus - 1) * 1000
+
+  theta <- 1
+  Ck_permille <- 14.2
+  ek_permille <- theta * Ck_permille * (1 - humid_input)
+
+
+  #Calculate dA
+  dA_permille <- (dP_input - (k_input * e_plus_permille)) / (1 + ((10^-3) * k_input * e_plus_permille))
+
+  #Calculate temporal enrichment slope (m)
+  m <- (humid_input - (10^-3) * (ek_permille + (e_plus_permille / alpha_plus))) / (1 - humid_input + ((10^-3) * ek_permille))
+
+  #Calculate limiting isotopic composition
+  dstar_permille <- ((humid_input * dA_permille) + ek_permille + (e_plus_permille/alpha_plus)) / (humid_input - ((10^-3) * (ek_permille + (e_plus_permille/alpha_plus))))
+
+  #Calculate our E:I based on lake sig
+  df$E.I <- (dL_input - dI_input) / (m * (dstar_permille - dL_input))
+
+  return(df)
+
+}
+
+ei_input <- data.frame(dL_permille = c(-11.77, -15.67, -18.23),
+                       dI_permille = c(-20.7, -18.2, -20.2),
+                       dP_permille = c(-23, -28, -32), 
+                       temp_C = c(14.3, 12.1, 8.9), 
+                       h_dec = c(0.68, 0.71, 0.58), 
+                       k = c(0.7, 0.72, 0.65))
+
+#adding calculated E:I
+ei_input <- eee2eye(ei_input, 'dL_permille', 'dI_permille', 'dP_permille', 'temp_C', 'h_dec', 'k')
+
+```
+or with numerical inputs:
+```{r}
+ei_input <- eee2eye(ei_input, 'dL_permille', -20.7, 'dP_permille', 14.3, 0.68, 0.7)
+```
