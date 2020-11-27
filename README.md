@@ -3,7 +3,9 @@ README
 PJKA
 02/11/2020
 
-# Calculating E:I Values from δ<sup>18</sup>O-H<sub>2</sub>O (‰)
+# eee2eye <img src="man/figures/eee2eye_logo.png" width="120" align="right" />
+
+## Calculating E:I Values from δ<sup>18</sup>O-H<sub>2</sub>O (‰)
 
 Please see ‘EI-Calculations.pdf’ in the ‘man’ folder for a step-by-step
 description of the Isotope Mass Balance used to calculate E:I.
