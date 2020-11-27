@@ -1,7 +1,4 @@
 ---
-title: "README"
-author: "PJKA"
-date: "02/11/2020"
 output: 
   github_document
 

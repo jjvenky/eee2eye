@@ -1,7 +1,3 @@
-README
-================
-PJKA
-02/11/2020
 
 # eee2eye <img src="man/figures/eee2eye_logo.png" width="120" align="right" />
 
