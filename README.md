@@ -3,8 +3,9 @@
 
 ## Calculating E:I Values from δ<sup>18</sup>O-H<sub>2</sub>O (‰)
 
-Please see ‘EI-Calculations.pdf’ in the ‘man’ folder for a step-by-step
-description of the Isotope Mass Balance used to calculate E:I.
+Please see ‘EI-Calculations.pdf’ in the ‘man/ei\_calcs’ folder for a
+step-by-step description of the Isotope Mass Balance used to calculate
+E:I.
 
 ## E:I Function
 
