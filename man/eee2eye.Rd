@@ -25,7 +25,12 @@ eee2eye(df, dL, dI, dP, temp, humid, k)
 This function allows you to calculate the evaporation to inflow (E:I) ratio of a lake based on a few assumptions and its water isotope value.
 }
 \examples{
-ei_input <- data.frame(dL_permille = c(-11.77, -15.67, -18.23),dI_permille = c(-20.7, -18.2, -20.2),dP_permille = c(-23, -28, -32),temp_C = c(14.3, 12.1, 8.9),h_dec = c(0.68, 0.71, 0.58),k = c(0.7, 0.72, 0.65))
+ei_input <- data.frame(dL_permille = c(-11.77, -15.67, -18.23),
+                       dI_permille = c(-20.7, -18.2, -20.2),
+                       dP_permille = c(-23, -28, -32),
+                       temp_C = c(14.3, 12.1, 8.9),
+                       h_dec = c(0.68, 0.71, 0.58),
+                       k = c(0.7, 0.72, 0.65))
 eee2eye(ei_input, 'dL_permille', 'dI_permille', 'dP_permille', 'temp_C', 'h_dec', 'k')
 }
 \keyword{E:I,}

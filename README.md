@@ -14,17 +14,21 @@ Yellowknife, NT.
 
 The function is based on a table with the following input parameters per
 sample:  
-\- dL (‰) = -11.77, steady-state lake isotope value (measured value from
+- dL (‰) = -11.77, steady-state lake isotope value (measured value from
 field)  
-\- dI (‰) = -20.7, source water, likely precipitation (value from Gibson
+- dI (‰) = -20.7, source water, likely precipitation (value from Gibson
 2001 and GNIP 1999)  
-\- dP (‰) = -23, average value during evaporation season (signal of
+- dP (‰) = -23, average value during evaporation season (signal of
 rain)  
-\- temp (C) = 14.3, average temp. on lake (from Gibson & Reid, 2010)  
-\- humid (dec) = 0.68, relative humidity (from Gibson & Reid, 2010)  
-\- k = 0.7, estimated for our area
+- temp (C) = 14.3, average temp. on lake (from Gibson & Reid, 2010)  
+- humid (dec) = 0.68, relative humidity (from Gibson & Reid, 2010)  
+- k = 0.7, estimated for our area
 
 ## Installation
+
+``` r
+remotes::install_github("paukes/eee2eye")
+```
 
 ## Example
 
@@ -49,9 +53,9 @@ ei_input <- data.frame(dL_permille = c(-11.77, -15.67, -18.23),
 ei_input <- eee2eye(ei_input, 'dL_permille', 'dI_permille', 'dP_permille', 'temp_C', 'h_dec', 'k')
 ```
 
-Add E:I ratios to the `data.frame` of field data when not all input
-values are known or estimated for each field site so common values can
-be specified:
+Add E:I ratios to a `data.frame` of field data when not all input values
+are known or estimated for each field site so common values can be
+specified:
 
 ``` r
 ei_input <- eee2eye(ei_input, 'dL_permille', -20.7, 'dP_permille', 14.3, 0.68, 0.7)
