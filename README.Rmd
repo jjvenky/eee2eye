@@ -21,11 +21,6 @@ The function is based on a table with the following input parameters per sample:
 
 ## Installation
 
-```{r, include = FALSE}
-# install.packages("remotes")
-remotes::install_github("paukes/eee2eye")
-```
-
 ```{r, eval = FALSE}
 remotes::install_github("paukes/eee2eye")
 ```
