@@ -22,10 +22,18 @@ field)
 rain)  
 - temp (C) = 14.3, average temp. on lake (from Gibson & Reid, 2010)  
 - humid (dec) = 0.68, relative humidity (from Gibson & Reid, 2010)  
+<<<<<<< HEAD
 - k = 0.7, estimated for our area *(see ‘Note’ at bottom to calculate an
 approximate value)*
+=======
+- k = 0.7, estimated for our area
+>>>>>>> f00dce1ec583c3d6d6db852a5280dfed8779eecd
 
 ## Installation
+
+``` r
+remotes::install_github("paukes/eee2eye")
+```
 
 ## Example
 
