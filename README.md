@@ -14,15 +14,16 @@ Yellowknife, NT.
 
 The function is based on a table with the following input parameters per
 sample:  
-\- dL (‰) = -11.77, steady-state lake isotope value (measured value from
+- dL (‰) = -11.77, steady-state lake isotope value (measured value from
 field)  
-\- dI (‰) = -20.7, source water, likely precipitation (value from Gibson
+- dI (‰) = -20.7, source water, likely precipitation (value from Gibson
 2001 and GNIP 1999)  
-\- dP (‰) = -23, average value during evaporation season (signal of
+- dP (‰) = -23, average value during evaporation season (signal of
 rain)  
-\- temp (C) = 14.3, average temp. on lake (from Gibson & Reid, 2010)  
-\- humid (dec) = 0.68, relative humidity (from Gibson & Reid, 2010)  
-\- k = 0.7, estimated for our area
+- temp (C) = 14.3, average temp. on lake (from Gibson & Reid, 2010)  
+- humid (dec) = 0.68, relative humidity (from Gibson & Reid, 2010)  
+- k = 0.7, estimated for our area *(see ‘Note’ at bottom to calculate an
+approximate value)*
 
 ## Installation
 
@@ -49,9 +50,9 @@ ei_input <- data.frame(dL_permille = c(-11.77, -15.67, -18.23),
 ei_input <- eee2eye(ei_input, 'dL_permille', 'dI_permille', 'dP_permille', 'temp_C', 'h_dec', 'k')
 ```
 
-Add E:I ratios to the `data.frame` of field data when not all input
-values are known or estimated for each field site so common values can
-be specified:
+Add E:I ratios to a `data.frame` of field data when not all input values
+are known or estimated for each field site so common values can be
+specified:
 
 ``` r
 ei_input <- eee2eye(ei_input, 'dL_permille', -20.7, 'dP_permille', 14.3, 0.68, 0.7)
@@ -60,3 +61,17 @@ ei_input <- eee2eye(ei_input, 'dL_permille', -20.7, 'dP_permille', 14.3, 0.68, 0
 See the
 [vignette](https://github.com/paukes/eee2eye/blob/master/man/ei_calc/EI-Calculations.pdf)
 for more information.
+
+#### A Note About the Seasonality Value (`k`):
+
+`k` is a very difficult parameter to quantify in that we don’t know much
+about it. For this reason we created a small function that you could
+approximate a `k` value based on the *decimal latitude* of your sampling
+site:
+
+``` r
+k_season <- function(x) {
+  k <- (((90 - x) / 90 ) * 0.5)+0.5
+  return(k)
+}
+```
