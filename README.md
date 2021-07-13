@@ -1,29 +1,29 @@
 
-# eee2eye <img src="man/figures/eee2eye_logo.png" width="120" align="right" />
+# eee2eye <img src="man/figures/eee2eye_logo.png" width="120" align="right"/>
 
-## Calculating E:I Values from δ<sup>18</sup>O-H<sub>2</sub>O (‰)
+## Calculating E:I Values from δ<sup>18</sup>O-H\~2\~O (‰)
 
 Please see ‘EI-Calculations.pdf’ in the ‘man/ei\_calcs’ folder for a
 step-by-step description of the Isotope Mass Balance used to calculate
 E:I.
 
-Briefly, this function calculates E:I ratios, based on
-δ18O-H<sub>2</sub>O data. Environmental conditions (i.e. evaporation
-rate, humidity, temperatures, etc.) are set for the sub-arctic around
-Yellowknife, NT.
+Briefly, this function calculates E:I ratios, based on δ18O-H\~2\~O
+data. Environmental conditions (i.e. evaporation rate, humidity,
+temperatures, etc.) are set for the sub-arctic around Yellowknife, NT.
 
 The function is based on a table with the following input parameters per
-sample:  
-- dL (‰) = -11.77, steady-state lake isotope value (measured value from
-field)  
-- dI (‰) = -20.7, source water, likely precipitation (value from Gibson
-2001 and GNIP 1999)  
-- dP (‰) = -23, average value during evaporation season (signal of
-rain)  
-- temp (C) = 14.3, average temp. on lake (from Gibson & Reid, 2010)  
-- humid (dec) = 0.68, relative humidity (from Gibson & Reid, 2010)  
-- k = 0.7, estimated for our area *(see ‘Note’ at bottom to calculate an
-approximate value)*
+sample:
+
+-   dL (‰) = -11.77, steady-state lake isotope value (measured value
+    from field)  
+-   dI (‰) = -20.7, source water, likely precipitation (value from
+    Gibson 2001 and GNIP 1999)  
+-   dP (‰) = -23, average value during evaporation season (signal of
+    rain)  
+-   temp (C) = 14.3, average temp. on lake (from Gibson & Reid, 2010)  
+-   humid (dec) = 0.68, relative humidity (from Gibson & Reid, 2010)  
+-   k = 0.7, estimated for our area *(see ‘Note’ at bottom to calculate
+    an approximate value)*
 
 ## Installation
 
@@ -31,7 +31,7 @@ approximate value)*
 remotes::install_github("paukes/eee2eye")
 ```
 
-## Example
+## Example E:I Calculation
 
 Load the package
 
@@ -66,7 +66,20 @@ See the
 [vignette](https://github.com/paukes/eee2eye/blob/master/man/ei_calc/EI-Calculations.pdf)
 for more information.
 
-#### A Note About the Seasonality Value (`k`):
+## Example WRT Calculation
+
+``` r
+# create example database
+ei_input <- data.frame(E.I = c(0.2042, 0.3138, 0.1838),
+                      e_myr = c(0.3965, 0.3965, 0.3965),
+                      SA_m2 = c(315900, 300825, 589950),
+                      V_m3 = c(2466000, 3004064, 5712829))
+
+# add calculated WRT values
+ei_input <- eee2eye_WRT(ei_input, 'E.I', 'e_myr', 'SA_m2', 'V_m3')
+```
+
+## A Note About the Seasonality Value (`k`):
 
 `k` is a very difficult parameter to quantify in that we don’t know much
 about it. For this reason we created a small function that you could
@@ -75,7 +88,7 @@ site:
 
 ``` r
 k_season <- function(x) {
-  k <- (((90 - x) / 90 ) * 0.5)+0.5
+  k <- (((90 - x) / 90 ) * 0.5) + 0.5
   return(k)
 }
 ```

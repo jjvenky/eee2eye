@@ -1,7 +1,7 @@
 Package: eee2eye
 Type: Package
 Title: Calculate evaporation to inflow ratios for lakes using a bunch of assumptions and δ18O-H2O values
-Version: 0.2.5
+Version: 0.2.6
 Authors@R:
     c(person(given = "Pieter J. K.",
              family = "Aukes",
